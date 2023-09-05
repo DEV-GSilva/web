@@ -9,6 +9,27 @@
 		} else {
 			$email = $mysqli->real_escape_string($_POST['email']);
 			$senha = $mysqli->real_escape_string($_POST['senha']);
+			
+			$sql_code = "Select * From usuarios Where email = '$email' And senha = '$senha'";
+			$sql_query = $mysqli->query($sql_code) or die("Falha na consulta de usuários: " . $mysqli->error);
+			
+			$quantidade = $sql_query->num_rows;
+			
+			if($quantidade == 1){
+				$usuario = $sql_query->fetch_assoc();
+				
+				if(!isset($_SESSION)){
+					session_start();
+				}
+				
+				$_SESSION['user'] = $usuario['id'];
+				$_SESSION['name'] = $usuario['nome'];
+				
+				header("Location: painel.php")
+					
+			} else {
+				echo "Falha ao logar! E-mail ou senha incorretos";
+			}
 		}
 	}
 ?>
